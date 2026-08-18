@@ -1,0 +1,21 @@
+# Vyapar Sanket
+
+Vyapar Sanket is an Android finance application by Layr0 for signal-led trading and investing workflows.
+
+Canonical URL: https://vyaparsanket.layr0.org/
+
+Product positioning: Vyapar Sanket is presented as an alternative to traditional mutual fund control models. Instead of placing money under a fund manager's allocation and charge structure, the product is designed around the user's own Android app experience, broker-connected setup, goal selection, and automated response to market signals.
+
+Core workflow:
+- User installs the Android app.
+- User chooses a goal such as short-term trading or long-term investing.
+- Empaneled SEBI-registered partner organizations publish supported market signals.
+- Vyapar Sanket receives the relevant signal.
+- Eligible open and close position workflows can run on autopilot through the user's configured broker setup.
+
+Important risk note: Vyapar Sanket does not promise assured returns. Trading and investing can create losses. Broker execution, connectivity, liquidity, charges, taxes, signal availability, and market movement can affect outcomes.
+
+Useful links:
+- Product docs: https://docs.layr0.org/docs/products/imc
+- Android download placeholder: https://play.google.com/store/apps/details?id=org.layr0.vyaparsanket
+- Product registration video: https://youtu.be/GCFPUApT26I
