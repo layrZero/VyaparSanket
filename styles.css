@@ -108,15 +108,12 @@ p {
 }
 
 .brand-mark {
-  display: grid;
   width: 42px;
   height: 42px;
-  place-items: center;
+  object-fit: cover;
   border: 1px solid #cad8cd;
   border-radius: var(--radius);
   background: var(--soft-green);
-  color: var(--accent-strong);
-  font-weight: 800;
 }
 
 .brand strong,
@@ -296,129 +293,6 @@ h3 {
   box-shadow: var(--shadow);
 }
 
-.phone-speaker {
-  position: absolute;
-  left: 50%;
-  top: 12px;
-  width: 76px;
-  height: 6px;
-  transform: translateX(-50%);
-  border-radius: 999px;
-  background: #39433e;
-}
-
-.phone-screen {
-  height: 100%;
-  padding: 2.4rem 1.05rem 1rem;
-  border-radius: 31px;
-  overflow: hidden;
-  background:
-    linear-gradient(180deg, #fdfbf6 0%, #f3efe6 58%, #e6f2ea 100%);
-}
-
-.app-top,
-.portfolio-line,
-.trade-steps {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.app-top {
-  font-weight: 850;
-}
-
-.app-top b {
-  padding: 0.28rem 0.55rem;
-  border-radius: 999px;
-  background: var(--soft-green);
-  color: var(--accent-strong);
-  font-size: 0.78rem;
-}
-
-.goal-pill {
-  margin-top: 1.3rem;
-  padding: 0.75rem;
-  border: 1px solid #d7e5db;
-  border-radius: var(--radius);
-  background: white;
-  color: var(--accent-strong);
-  font-weight: 760;
-}
-
-.portfolio-line {
-  margin-top: 1rem;
-  color: var(--muted);
-}
-
-.portfolio-line strong {
-  color: var(--accent);
-}
-
-.chart-bars {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  align-items: end;
-  gap: 0.55rem;
-  height: 150px;
-  margin: 1.25rem 0;
-  padding: 1rem;
-  border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.75);
-}
-
-.chart-bars span {
-  display: block;
-  border-radius: 6px 6px 2px 2px;
-  background: var(--accent);
-  animation: barPulse 2.6s ease-in-out infinite;
-}
-
-.chart-bars span:nth-child(1) { height: 44%; animation-delay: 0ms; }
-.chart-bars span:nth-child(2) { height: 66%; animation-delay: 110ms; }
-.chart-bars span:nth-child(3) { height: 38%; animation-delay: 220ms; }
-.chart-bars span:nth-child(4) { height: 82%; animation-delay: 330ms; }
-.chart-bars span:nth-child(5) { height: 58%; animation-delay: 440ms; }
-
-.trade-card {
-  padding: 1rem;
-  border: 1px solid #d9e3dc;
-  border-radius: var(--radius);
-  background: white;
-}
-
-.trade-card small {
-  display: block;
-  color: var(--muted);
-}
-
-.trade-card strong {
-  display: block;
-  margin-top: 0.35rem;
-}
-
-.trade-card p {
-  margin: 0.45rem 0 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.trade-steps {
-  margin-top: 1rem;
-}
-
-.trade-steps span {
-  flex: 1;
-  padding: 0.6rem 0.35rem;
-  border-radius: var(--radius);
-  background: #ecf4ef;
-  color: var(--accent-strong);
-  font-size: 0.8rem;
-  font-weight: 800;
-  text-align: center;
-}
-
 .signal-card {
   position: absolute;
   z-index: 2;
@@ -450,9 +324,53 @@ h3 {
   animation-delay: 1300ms;
 }
 
+.screenshot-phone {
+  display: block;
+  overflow: hidden;
+}
+
+.screenshot-phone::before {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  z-index: 2;
+  width: 76px;
+  height: 6px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(29, 36, 32, 0.78);
+  content: "";
+}
+
+.screenshot-phone img {
+  width: 100%;
+  height: 100%;
+  border-radius: 31px;
+  object-fit: contain;
+  object-position: top center;
+  background: #f5f6fb;
+}
+
+.screenshot-phone figcaption {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  bottom: 26px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--accent-strong);
+  font-size: 0.82rem;
+  font-weight: 850;
+  text-align: center;
+  backdrop-filter: blur(12px);
+}
+
 .comparison,
 .goals,
 .flow,
+.screenshots,
 .video-section,
 .risk {
   padding: clamp(4rem, 8vw, 7rem) 0;
@@ -545,6 +463,23 @@ h3 {
   background: radial-gradient(circle at 35% 35%, #fff 0 12%, #34413b 13% 100%);
 }
 
+.screenshot-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.screenshot-grid .phone-frame {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  max-width: 310px;
+  height: auto;
+  aspect-ratio: 9 / 19.5;
+  margin: 0 auto;
+}
+
 .flow-steps {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -610,6 +545,46 @@ h3 {
   width: 100%;
   height: 100%;
   border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.video-frame.is-embed-ready iframe {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.85fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #fffdf8;
+}
+
+.video-frame.is-embed-ready .video-fallback {
+  display: none;
+}
+
+.video-fallback img {
+  width: 100%;
+  height: 100%;
+  min-height: 210px;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+.video-fallback strong {
+  display: block;
+  font-size: 1.2rem;
+}
+
+.video-fallback p {
+  margin: 0.65rem 0 1rem;
+  color: var(--muted);
 }
 
 .risk {
@@ -746,6 +721,7 @@ h3 {
 
   .comparison-grid,
   .goal-grid,
+  .screenshot-grid,
   .flow-steps {
     grid-template-columns: 1fr;
   }
@@ -814,6 +790,11 @@ h3 {
     height: 560px;
   }
 
+  .screenshot-grid .phone-frame {
+    width: min(320px, 100%);
+    height: auto;
+  }
+
   .signal-card {
     width: 174px;
     font-size: 0.86rem;
@@ -835,5 +816,14 @@ h3 {
   .footer-links {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .video-fallback {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .video-fallback img {
+    min-height: 150px;
   }
 }

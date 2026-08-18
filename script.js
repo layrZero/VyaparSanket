@@ -1,4 +1,12 @@
 (function () {
+  var videoFrame = document.querySelector("[data-video-embed]");
+  var videoIframe = videoFrame ? videoFrame.querySelector("iframe") : null;
+
+  if (videoFrame && videoIframe && window.location.protocol !== "file:") {
+    videoIframe.src = videoIframe.dataset.src;
+    videoFrame.classList.add("is-embed-ready");
+  }
+
   var revealItems = document.querySelectorAll(".section-reveal");
 
   if (!("IntersectionObserver" in window)) {
