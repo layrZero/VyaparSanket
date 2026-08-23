@@ -1206,13 +1206,21 @@ h3 {
     flex-direction: column;
   }
 
+  .return-chart {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .return-bars {
+    min-width: 640px;
+  }
+
   .return-month {
-    grid-template-columns: 1fr;
-    gap: 0.35rem;
-    padding: 0.8rem;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: rgba(255, 255, 255, 0.72);
+    grid-template-columns: 3.1rem repeat(3, minmax(120px, 1fr));
+    gap: 0.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
   }
 
   .return-bar b {
@@ -1225,65 +1233,16 @@ h3 {
   }
 
   .performance-table-wrap {
-    overflow: visible;
-    border: 0;
-    background: transparent;
-    box-shadow: none;
-  }
-
-  .performance-table,
-  .performance-table caption,
-  .performance-table thead,
-  .performance-table tbody,
-  .performance-table tr,
-  .performance-table th,
-  .performance-table td {
-    display: block;
-    width: 100%;
-    min-width: 0;
-  }
-
-  .performance-table caption {
-    border-radius: var(--radius) var(--radius) 0 0;
-  }
-
-  .performance-table thead {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-  }
-
-  .performance-table tbody tr {
-    margin-top: 0.9rem;
-    overflow: hidden;
-    border: 1px solid #c6d3dc;
-    border-radius: var(--radius);
+    overflow-x: auto;
+    border: 1px solid #b7c7d4;
     background: white;
+    box-shadow: 0 14px 40px rgba(23, 32, 28, 0.08);
+    -webkit-overflow-scrolling: touch;
   }
 
-  .performance-table tbody th {
-    padding: 0.9rem 1rem;
-    border: 0;
-    background: #dbeaf4;
-    color: #173c5c;
-    text-align: left;
-  }
-
-  .performance-table td {
-    display: grid;
-    grid-template-columns: 6.5rem minmax(0, 1fr);
-    align-items: start;
-    gap: 0.75rem;
-    padding: 0.9rem 1rem;
-    border-width: 1px 0 0;
-    text-align: left;
-  }
-
-  .performance-table td::before {
-    color: var(--muted);
-    content: attr(data-label);
-    font-weight: 850;
+  .performance-table {
+    display: table;
+    min-width: 780px;
+    font-size: 0.88rem;
   }
 }
