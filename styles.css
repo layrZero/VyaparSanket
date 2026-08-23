@@ -84,8 +84,10 @@ p {
 .nav-shell,
 .hero,
 .comparison,
+.screenshots,
 .goals,
 .flow,
+.performance,
 .video-section,
 .risk,
 .site-footer {
@@ -371,6 +373,7 @@ h3 {
 .goals,
 .flow,
 .screenshots,
+.performance,
 .video-section,
 .risk {
   padding: clamp(4rem, 8vw, 7rem) 0;
@@ -478,6 +481,132 @@ h3 {
   height: auto;
   aspect-ratio: 9 / 19.5;
   margin: 0 auto;
+}
+
+.performance-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.performance-summary article {
+  padding: 1.15rem;
+  border: 1px solid #c8ddd0;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #ffffff, #edf7f1);
+}
+
+.performance-summary span,
+.performance-summary small {
+  display: block;
+  color: var(--muted);
+}
+
+.performance-summary strong {
+  display: block;
+  margin: 0.35rem 0;
+  color: var(--accent-strong);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.performance-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #b7c7d4;
+  border-radius: var(--radius);
+  background: white;
+  box-shadow: 0 14px 40px rgba(23, 32, 28, 0.08);
+}
+
+.performance-table {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+  font-size: 0.96rem;
+}
+
+.performance-table caption {
+  caption-side: top;
+  padding: 0.9rem 1rem;
+  background: #153e5f;
+  color: white;
+  font-size: 1rem;
+  font-weight: 750;
+  text-align: left;
+}
+
+.performance-table th,
+.performance-table td {
+  padding: 1rem;
+  border: 1px solid #c6d3dc;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.performance-table thead th {
+  background: #dbeaf4;
+  color: #173c5c;
+  font-size: 1.05rem;
+}
+
+.performance-table tbody tr:nth-child(odd) {
+  background: #f6f9fc;
+}
+
+.performance-table tbody th {
+  color: var(--ink);
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.performance-table td b,
+.performance-table td span {
+  display: block;
+  line-height: 1.25;
+}
+
+.performance-table td b {
+  color: var(--ink);
+}
+
+.performance-table td span {
+  color: #3d4b45;
+  font-weight: 700;
+}
+
+.performance-table td.negative b {
+  color: #9a2e2e;
+}
+
+.source-callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.8rem;
+  padding: 1rem;
+  border: 1px solid #8eb7d6;
+  border-radius: var(--radius);
+  background: #eaf4fb;
+}
+
+.source-callout p,
+.performance-note {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+}
+
+.source-callout a {
+  color: #0a67ad;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.performance-note {
+  max-width: 980px;
+  margin-top: 1rem;
+  font-size: 0.94rem;
 }
 
 .flow-steps {
@@ -673,8 +802,10 @@ h3 {
   .nav-shell,
   .hero,
   .comparison,
+  .screenshots,
   .goals,
   .flow,
+  .performance,
   .video-section,
   .risk,
   .site-footer {
@@ -722,6 +853,7 @@ h3 {
   .comparison-grid,
   .goal-grid,
   .screenshot-grid,
+  .performance-summary,
   .flow-steps {
     grid-template-columns: 1fr;
   }
@@ -732,6 +864,11 @@ h3 {
 
   .flow-steps span {
     margin-bottom: 1.8rem;
+  }
+
+  .source-callout {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 
