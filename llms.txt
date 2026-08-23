@@ -16,6 +16,7 @@ Core workflow:
 Website media:
 - The app logo is served from /assets/icon/vyapar-sanket-icon.png.
 - The Play Store feature graphic is served from /assets/icon/play-store-feature-graphic.png.
+- The Research360 performance screenshot is served from /assets/performance/research360-monthly-gross-signal-returns.jpg.
 - The website includes real Android app screenshots captured before login from a connected device:
   - /assets/screenshots/vyapar-sanket-before-login-1.png
   - /assets/screenshots/vyapar-sanket-before-login-2.png
