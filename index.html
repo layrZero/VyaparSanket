@@ -33,7 +33,7 @@
     <script>
       document.documentElement.classList.add("js");
     </script>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260823-performance-charts">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -228,6 +228,78 @@
             <small>May 2026 gross signal return</small>
           </article>
         </div>
+        <div class="performance-charts" aria-label="Research360 performance charts">
+          <figure class="chart-panel return-chart">
+            <figcaption>
+              <strong>Gross signal return by month</strong>
+              <span>Percentage return for each segment. March swing closed negative.</span>
+            </figcaption>
+            <div class="chart-legend" aria-hidden="true">
+              <span><i class="intraday-key"></i>Intraday</span>
+              <span><i class="swing-key"></i>Swing</span>
+              <span><i class="long-key"></i>Long Term</span>
+            </div>
+            <div class="return-bars">
+              <div class="return-month">
+                <span class="month-label">Feb</span>
+                <span class="return-bar intraday-bar" style="--value: 2.5%;" aria-label="February intraday return 10.60%"><b>10.60%</b></span>
+                <span class="return-bar swing-bar" style="--value: 17.8%;" aria-label="February swing return 75.17%"><b>75.17%</b></span>
+                <span class="return-bar long-bar" style="--value: 19.1%;" aria-label="February long term return 80.73%"><b>80.73%</b></span>
+              </div>
+              <div class="return-month">
+                <span class="month-label">Mar</span>
+                <span class="return-bar intraday-bar" style="--value: 58.9%;" aria-label="March intraday return 248.53%"><b>248.53%</b></span>
+                <span class="return-bar swing-bar negative-bar" style="--value: 29.6%;" aria-label="March swing return negative 124.94%"><b>-124.94%</b></span>
+                <span class="return-bar long-bar" style="--value: 1.1%;" aria-label="March long term return 4.50%"><b>4.50%</b></span>
+              </div>
+              <div class="return-month">
+                <span class="month-label">Apr</span>
+                <span class="return-bar intraday-bar" style="--value: 100%;" aria-label="April intraday return 421.88%"><b>421.88%</b></span>
+                <span class="return-bar swing-bar" style="--value: 59.3%;" aria-label="April swing return 250.12%"><b>250.12%</b></span>
+                <span class="return-bar long-bar" style="--value: 0.6%;" aria-label="April long term return 2.34%"><b>2.34%</b></span>
+              </div>
+              <div class="return-month">
+                <span class="month-label">May</span>
+                <span class="return-bar intraday-bar" style="--value: 78.2%;" aria-label="May intraday return 329.97%"><b>329.97%</b></span>
+                <span class="return-bar swing-bar" style="--value: 39%;" aria-label="May swing return 164.34%"><b>164.34%</b></span>
+                <span class="return-bar long-bar" style="--value: 29.7%;" aria-label="May long term return 125.11%"><b>125.11%</b></span>
+              </div>
+              <div class="return-month">
+                <span class="month-label">Jun</span>
+                <span class="return-bar intraday-bar" style="--value: 80.4%;" aria-label="June intraday return 339.11%"><b>339.11%</b></span>
+                <span class="return-bar swing-bar" style="--value: 42.1%;" aria-label="June swing return 177.47%"><b>177.47%</b></span>
+                <span class="return-bar long-bar" style="--value: 9%;" aria-label="June long term return 38.08%"><b>38.08%</b></span>
+              </div>
+              <div class="return-month">
+                <span class="month-label">Jul</span>
+                <span class="return-bar intraday-bar" style="--value: 56.8%;" aria-label="July intraday return 239.59%"><b>239.59%</b></span>
+                <span class="return-bar swing-bar" style="--value: 46.9%;" aria-label="July swing return 197.67%"><b>197.67%</b></span>
+                <span class="return-bar long-bar" style="--value: 4.6%;" aria-label="July long term return 19.28%"><b>19.28%</b></span>
+              </div>
+              <div class="return-month">
+                <span class="month-label">Aug</span>
+                <span class="return-bar intraday-bar" style="--value: 23.4%;" aria-label="August intraday return 98.73%"><b>98.73%</b></span>
+                <span class="return-bar swing-bar" style="--value: 43.6%;" aria-label="August swing return 184.03%"><b>184.03%</b></span>
+                <span class="return-bar long-bar" style="--value: 22.4%;" aria-label="August long term return 94.63%"><b>94.63%</b></span>
+              </div>
+            </div>
+          </figure>
+          <figure class="chart-panel trade-chart">
+            <figcaption>
+              <strong>Closed trades by segment</strong>
+              <span>Trade count behind each monthly return.</span>
+            </figcaption>
+            <div class="trade-list">
+              <div class="trade-row"><span>Feb 2026</span><b>694</b><i style="--value: 12.5%;"></i></div>
+              <div class="trade-row"><span>Mar 2026</span><b>4,033</b><i style="--value: 72.5%;"></i></div>
+              <div class="trade-row"><span>Apr 2026</span><b>5,088</b><i style="--value: 91.5%;"></i></div>
+              <div class="trade-row"><span>May 2026</span><b>4,348</b><i style="--value: 78.2%;"></i></div>
+              <div class="trade-row"><span>Jun 2026</span><b>4,754</b><i style="--value: 85.5%;"></i></div>
+              <div class="trade-row"><span>Jul 2026</span><b>5,557</b><i style="--value: 100%;"></i></div>
+              <div class="trade-row"><span>Aug 2026</span><b>5,171</b><i style="--value: 93.1%;"></i></div>
+            </div>
+          </figure>
+        </div>
         <div class="performance-table-wrap" role="region" aria-label="Research360 monthly gross signal returns table" tabindex="0">
           <table class="performance-table">
             <caption>
@@ -244,45 +316,45 @@
             <tbody>
               <tr>
                 <th scope="row">Aug 2026</th>
-                <td><b>Return: 98.73%</b><span>Win: 58.92%</span><span>Trades: 4,980</span></td>
-                <td><b>Return: 184.03%</b><span>Win: 60.80%</span><span>Trades: 176</span></td>
-                <td><b>Return: 94.63%</b><span>Win: 73.33%</span><span>Trades: 15</span></td>
+                <td data-label="Intraday"><b>Return: 98.73%</b><span>Win: 58.92%</span><span>Trades: 4,980</span></td>
+                <td data-label="Swing"><b>Return: 184.03%</b><span>Win: 60.80%</span><span>Trades: 176</span></td>
+                <td data-label="Long Term"><b>Return: 94.63%</b><span>Win: 73.33%</span><span>Trades: 15</span></td>
               </tr>
               <tr>
                 <th scope="row">Jul 2026</th>
-                <td><b>Return: 239.59%</b><span>Win: 58.40%</span><span>Trades: 5,324</span></td>
-                <td><b>Return: 197.67%</b><span>Win: 61.03%</span><span>Trades: 213</span></td>
-                <td><b>Return: 19.28%</b><span>Win: 75.00%</span><span>Trades: 20</span></td>
+                <td data-label="Intraday"><b>Return: 239.59%</b><span>Win: 58.40%</span><span>Trades: 5,324</span></td>
+                <td data-label="Swing"><b>Return: 197.67%</b><span>Win: 61.03%</span><span>Trades: 213</span></td>
+                <td data-label="Long Term"><b>Return: 19.28%</b><span>Win: 75.00%</span><span>Trades: 20</span></td>
               </tr>
               <tr>
                 <th scope="row">Jun 2026</th>
-                <td><b>Return: 339.11%</b><span>Win: 59.43%</span><span>Trades: 4,570</span></td>
-                <td><b>Return: 177.47%</b><span>Win: 63.89%</span><span>Trades: 180</span></td>
-                <td><b>Return: 38.08%</b><span>Win: 75.00%</span><span>Trades: 4</span></td>
+                <td data-label="Intraday"><b>Return: 339.11%</b><span>Win: 59.43%</span><span>Trades: 4,570</span></td>
+                <td data-label="Swing"><b>Return: 177.47%</b><span>Win: 63.89%</span><span>Trades: 180</span></td>
+                <td data-label="Long Term"><b>Return: 38.08%</b><span>Win: 75.00%</span><span>Trades: 4</span></td>
               </tr>
               <tr>
                 <th scope="row">May 2026</th>
-                <td><b>Return: 329.97%</b><span>Win: 59.50%</span><span>Trades: 4,193</span></td>
-                <td><b>Return: 164.34%</b><span>Win: 63.45%</span><span>Trades: 145</span></td>
-                <td><b>Return: 125.11%</b><span>Win: 80.00%</span><span>Trades: 10</span></td>
+                <td data-label="Intraday"><b>Return: 329.97%</b><span>Win: 59.50%</span><span>Trades: 4,193</span></td>
+                <td data-label="Swing"><b>Return: 164.34%</b><span>Win: 63.45%</span><span>Trades: 145</span></td>
+                <td data-label="Long Term"><b>Return: 125.11%</b><span>Win: 80.00%</span><span>Trades: 10</span></td>
               </tr>
               <tr>
                 <th scope="row">Apr 2026</th>
-                <td><b>Return: 421.88%</b><span>Win: 61.10%</span><span>Trades: 4,936</span></td>
-                <td><b>Return: 250.12%</b><span>Win: 69.39%</span><span>Trades: 147</span></td>
-                <td><b>Return: 2.34%</b><span>Win: 60.00%</span><span>Trades: 5</span></td>
+                <td data-label="Intraday"><b>Return: 421.88%</b><span>Win: 61.10%</span><span>Trades: 4,936</span></td>
+                <td data-label="Swing"><b>Return: 250.12%</b><span>Win: 69.39%</span><span>Trades: 147</span></td>
+                <td data-label="Long Term"><b>Return: 2.34%</b><span>Win: 60.00%</span><span>Trades: 5</span></td>
               </tr>
               <tr>
                 <th scope="row">Mar 2026</th>
-                <td><b>Return: 248.53%</b><span>Win: 60.50%</span><span>Trades: 3,934</span></td>
-                <td class="negative"><b>Return: -124.94%</b><span>Win: 41.84%</span><span>Trades: 98</span></td>
-                <td><b>Return: 4.50%</b><span>Win: 100.00%</span><span>Trades: 1</span></td>
+                <td data-label="Intraday"><b>Return: 248.53%</b><span>Win: 60.50%</span><span>Trades: 3,934</span></td>
+                <td data-label="Swing" class="negative"><b>Return: -124.94%</b><span>Win: 41.84%</span><span>Trades: 98</span></td>
+                <td data-label="Long Term"><b>Return: 4.50%</b><span>Win: 100.00%</span><span>Trades: 1</span></td>
               </tr>
               <tr>
                 <th scope="row">Feb 2026</th>
-                <td><b>Return: 10.60%</b><span>Win: 58.95%</span><span>Trades: 648</span></td>
-                <td><b>Return: 75.17%</b><span>Win: 75.61%</span><span>Trades: 41</span></td>
-                <td><b>Return: 80.73%</b><span>Win: 100.00%</span><span>Trades: 5</span></td>
+                <td data-label="Intraday"><b>Return: 10.60%</b><span>Win: 58.95%</span><span>Trades: 648</span></td>
+                <td data-label="Swing"><b>Return: 75.17%</b><span>Win: 75.61%</span><span>Trades: 41</span></td>
+                <td data-label="Long Term"><b>Return: 80.73%</b><span>Win: 100.00%</span><span>Trades: 5</span></td>
               </tr>
             </tbody>
           </table>
