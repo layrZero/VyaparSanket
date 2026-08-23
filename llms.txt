@@ -16,14 +16,14 @@ Core workflow:
 Website media:
 - The app logo is served from /assets/icon/vyapar-sanket-icon.png.
 - The Play Store feature graphic is served from /assets/icon/play-store-feature-graphic.png.
-- The website includes real Android app screenshots captured before login from a connected device:
-  - /assets/screenshots/vyapar-sanket-before-login-1.png
-  - /assets/screenshots/vyapar-sanket-before-login-2.png
-  - /assets/screenshots/vyapar-sanket-before-login-3.png
+- The website includes real Android app screenshots captured live over ADB from a connected device:
+  - /assets/screenshots/vyapar-sanket-home.png
+  - /assets/screenshots/vyapar-sanket-trades.png
+  - /assets/screenshots/vyapar-sanket-profile.png
 
 Past performance section:
 - The page includes Research360 Monthly Gross Signal Returns for Feb 2026 through Aug 2026, split by Intraday, Swing, and Long Term segments.
-- The performance data is shown as summary cards, chart panels for gross signal returns and closed trades, a responsive text table, and the original screenshot snapshot.
+- The performance data is shown as summary cards, chart panels for gross signal returns and closed trades, and a responsive text table.
 - Source verification link: https://www.research360.in/alpha-picks/stocks-recommendations
 - The page states that these are gross signal figures, not investor account returns, and that past performance does not guarantee future results.
 
