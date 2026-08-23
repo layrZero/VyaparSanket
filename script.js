@@ -1,4 +1,18 @@
 (function () {
+  var siteHeader = document.querySelector(".site-header");
+
+  function updateHeaderHeight() {
+    if (!siteHeader) {
+      return;
+    }
+
+    document.documentElement.style.setProperty("--header-height", siteHeader.offsetHeight + "px");
+  }
+
+  updateHeaderHeight();
+  window.addEventListener("resize", updateHeaderHeight);
+  window.addEventListener("orientationchange", updateHeaderHeight);
+
   var videoFrame = document.querySelector("[data-video-embed]");
   var videoIframe = videoFrame ? videoFrame.querySelector("iframe") : null;
 
