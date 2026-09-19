@@ -59,6 +59,18 @@ p {
   line-height: 1.65;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .skip-link {
   position: fixed;
   left: 1rem;
@@ -373,6 +385,245 @@ h3 {
   font-weight: 850;
   text-align: center;
   backdrop-filter: blur(12px);
+}
+
+/* Pocket Trading Desk: the WebGL canvas is decorative; the adjacent labels carry the story. */
+.pocket-hero {
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.94fr);
+}
+
+.pocket-hero h1 {
+  max-width: 690px;
+  font-size: clamp(3.35rem, 5.8vw, 5.65rem);
+}
+
+.trading-desk-visual {
+  display: grid;
+  align-content: center;
+  gap: 0.9rem;
+  min-height: 650px;
+}
+
+.desk-stage {
+  position: relative;
+  min-height: 520px;
+  overflow: hidden;
+  border: 1px solid rgba(23, 107, 77, 0.2);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 48% 38%, rgba(255, 255, 255, 0.98) 0 12%, rgba(228, 242, 235, 0.85) 31%, rgba(247, 236, 209, 0.82) 67%, rgba(248, 245, 239, 0.1) 100%),
+    linear-gradient(135deg, rgba(23, 107, 77, 0.08), transparent 42%);
+  box-shadow: 0 35px 80px rgba(23, 32, 28, 0.16);
+}
+
+.desk-stage::before,
+.desk-stage::after {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  content: "";
+}
+
+.desk-stage::before {
+  inset: 18px;
+  border: 1px solid rgba(23, 107, 77, 0.16);
+  border-radius: 18px;
+}
+
+.desk-stage::after {
+  right: 22px;
+  top: 22px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: -16px 0 0 rgba(23, 107, 77, 0.38), -32px 0 0 rgba(23, 32, 28, 0.16);
+}
+
+.desk-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: none;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.webgl-ready .desk-canvas {
+  display: block;
+}
+
+.webgl-ready .static-desk {
+  opacity: 0;
+}
+
+.static-desk {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  transition: opacity 220ms ease;
+}
+
+.static-phone {
+  position: relative;
+  width: min(56%, 292px);
+  aspect-ratio: 0.67;
+  padding: 13px;
+  border: 8px solid #17201c;
+  border-radius: 35px;
+  background: #17201c;
+  box-shadow: 16px 26px 0 rgba(23, 32, 28, 0.1), 0 28px 50px rgba(23, 32, 28, 0.24);
+  transform: rotate(-5deg) perspective(800px) rotateY(-8deg);
+}
+
+.static-phone::before {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 9px;
+  width: 74px;
+  height: 6px;
+  transform: translateX(-50%);
+  border-radius: 99px;
+  background: #17201c;
+  content: "";
+}
+
+.static-phone-screen {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 23px;
+  background: linear-gradient(150deg, #fffcf2, #e5f0e9);
+}
+
+.static-phone-screen > span {
+  position: absolute;
+  display: block;
+}
+
+.static-screen-title {
+  left: 20px;
+  top: 27px;
+  color: var(--accent-strong);
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.static-panel {
+  z-index: 2;
+  width: 86px;
+  padding: 10px;
+  border-radius: 7px;
+  color: white;
+  font-size: 0.48rem;
+  line-height: 1.35;
+  letter-spacing: 0.05em;
+}
+
+.static-panel b {
+  font-size: 0.63rem;
+  letter-spacing: 0;
+}
+
+.static-panel-goal {
+  left: 19px;
+  top: 72px;
+  background: var(--accent);
+}
+
+.static-panel-broker {
+  right: 18px;
+  bottom: 56px;
+  background: var(--ink);
+}
+
+.static-figure {
+  z-index: 2;
+  left: 42%;
+  top: 36%;
+  width: 34px;
+  height: 63px;
+  border-radius: 18px 18px 10px 10px;
+  background: linear-gradient(#c8942d 0 28%, #176b4d 29%);
+  box-shadow: 16px 42px 0 -6px #c8942d;
+}
+
+.static-ledger {
+  right: 24px;
+  top: 82px;
+  width: 61px;
+  height: 94px;
+  border: 2px solid var(--gold);
+  border-radius: 4px;
+  background: repeating-linear-gradient(to bottom, transparent 0 13px, rgba(23, 32, 28, 0.24) 14px 16px);
+}
+
+.static-signal {
+  left: 22px;
+  bottom: 106px;
+  width: 21px;
+  height: 21px;
+  border: 5px solid var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 0 8px rgba(200, 148, 45, 0.18);
+}
+
+.static-path {
+  left: 42px;
+  bottom: 93px;
+  width: 134px;
+  height: 80px;
+  border-right: 3px solid var(--gold);
+  border-bottom: 3px solid var(--gold);
+  border-radius: 0 0 30px 0;
+  transform: skewY(-24deg);
+}
+
+.desk-caption {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.9rem;
+  row-gap: 0.25rem;
+  align-items: center;
+  min-height: 72px;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 14px 32px rgba(23, 32, 28, 0.06);
+}
+
+.desk-progress {
+  grid-row: span 2;
+  color: var(--accent);
+  font-size: 0.67rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.desk-caption strong {
+  font-size: 1rem;
+}
+
+.desk-caption > span:last-child {
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.42;
+}
+
+.desk-proof {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .comparison,
@@ -1254,5 +1505,82 @@ h3 {
     display: table;
     min-width: 780px;
     font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 980px) {
+  .pocket-hero {
+    grid-template-columns: 1fr;
+    gap: 1.8rem;
+  }
+
+  .pocket-hero h1 {
+    font-size: clamp(3rem, 7.5vw, 4.45rem);
+  }
+
+  .trading-desk-visual {
+    width: min(620px, 100%);
+    min-height: 0;
+    margin-inline: auto;
+  }
+
+  .desk-stage {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 680px) {
+  .pocket-hero {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+
+  .pocket-hero .trading-desk-visual {
+    order: -1;
+    display: grid;
+    width: 100%;
+    min-height: 0;
+    padding-top: 0;
+  }
+
+  .pocket-hero h1 {
+    font-size: clamp(2.22rem, 10vw, 2.85rem);
+  }
+
+  .desk-stage {
+    min-height: 355px;
+    border-radius: 20px;
+  }
+
+  .desk-stage::before {
+    inset: 12px;
+    border-radius: 13px;
+  }
+
+  .static-phone {
+    width: min(57%, 205px);
+    border-width: 6px;
+    border-radius: 27px;
+  }
+
+  .static-phone-screen {
+    border-radius: 18px;
+  }
+
+  .desk-caption {
+    grid-template-columns: 1fr;
+    gap: 0.32rem;
+    padding: 0.9rem;
+  }
+
+  .desk-progress {
+    grid-row: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .static-desk {
+    transition: none;
   }
 }

@@ -33,7 +33,7 @@
     <script>
       document.documentElement.classList.add("js");
     </script>
-    <link rel="stylesheet" href="styles.css?v=20260823-fixed-header">
+    <link rel="stylesheet" href="styles.css?v=20260920-pocket-desk">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -88,13 +88,13 @@
     </header>
 
     <main id="main">
-      <section class="hero section-reveal" aria-labelledby="hero-title">
+      <section class="hero pocket-hero section-reveal" aria-labelledby="hero-title" data-pocket-hero>
         <div class="hero-copy">
-          <p class="eyebrow">Android app for signal-led market participation</p>
-          <h1 id="hero-title">An alternative to mutual funds, with the fund manager in your pocket.</h1>
+          <p class="eyebrow">Your configuration. Your broker account. Your pocket desk.</p>
+          <h1 id="hero-title">Your fund manager, in your pocket.</h1>
           <p class="hero-lede">
-            Vyapar Sanket lets users choose a goal, receive signals from empaneled SEBI-registered partner organizations, and automate position opening and closing through their own broker-connected setup.
-            Vyapar Sanket is part of the <a href="https://layr0.org/products">Layr0 products ecosystem</a>.
+            Choose a goal and the controls that matter to you. Vyapar Sanket organises empaneled SEBI-registered partner signals and eligible open/close actions through your own broker-connected setup.
+            “Fund manager” is a metaphor for this configuration-led workflow&mdash;not a managed fund, personal advisory service, or promise of returns.
           </p>
           <div class="hero-actions">
             <a class="button" href="https://play.google.com/store/apps/details?id=org.layr0.vyaparsanket" aria-label="Download Vyapar Sanket on Google Play">
@@ -118,14 +118,34 @@
             </div>
           </dl>
         </div>
-        <div class="hero-visual screenshot-visual" aria-label="Vyapar Sanket Android app screenshots">
-          <div class="signal-card signal-card-one">Live home screen</div>
-          <div class="signal-card signal-card-two">Captured from Android</div>
-          <div class="signal-card signal-card-three">Broker-ready flow</div>
-          <figure class="phone-frame screenshot-phone hero-phone">
-            <img src="assets/screenshots/vyapar-sanket-home.png" alt="Vyapar Sanket Android app home screen showing license setup and subscribed signal channels">
-            <figcaption>Live app home screen captured over ADB</figcaption>
-          </figure>
+        <div class="hero-visual trading-desk-visual" data-trading-desk>
+          <div class="desk-stage" aria-hidden="true">
+            <canvas class="desk-canvas" data-trading-desk-canvas></canvas>
+            <div class="static-desk">
+              <div class="static-phone">
+                <div class="static-phone-screen">
+                  <span class="static-screen-title">VYAPAR SANKET</span>
+                  <span class="static-panel static-panel-goal">GOAL<br><b>Growth</b></span>
+                  <span class="static-figure"></span>
+                  <span class="static-ledger"></span>
+                  <span class="static-signal"></span>
+                  <span class="static-path"></span>
+                  <span class="static-panel static-panel-broker">BROKER<br><b>Connected</b></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="desk-caption" aria-live="polite">
+            <span class="desk-progress" data-desk-progress>01 / CONFIGURE</span>
+            <strong data-desk-title>Configure your mandate</strong>
+            <span data-desk-description>Set the goal, risk boundary, and broker-connected workflow before a signal can act.</span>
+          </div>
+          <p class="desk-proof">A product illustration. The live Android screens below remain the source of truth.</p>
+          <ol class="sr-only" aria-label="Pocket trading desk story">
+            <li>Configure your mandate: set the goal, risk boundary, and broker-connected workflow before a signal can act.</li>
+            <li>Research becomes a signal: a partner-published signal is checked against your selected configuration.</li>
+            <li>Your configured workflow acts: eligible actions follow the connected broker workflow, subject to market risk and execution conditions.</li>
+          </ol>
         </div>
       </section>
 
@@ -457,6 +477,7 @@
       </div>
     </footer>
 
+    <script type="module" src="scene.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
