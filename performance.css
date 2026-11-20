@@ -1,0 +1,139 @@
+.performance {
+  --report-line: #cfcfc0;
+  --report-ink: #202d26;
+  --report-muted: #526056;
+  font-variant-numeric: tabular-nums;
+}
+
+.performance-summary,
+.performance-charts {
+  display: grid;
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+
+.performance-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.performance-charts { grid-template-columns: minmax(0, 1.23fr) minmax(0, .77fr); }
+
+.performance-summary article,
+.performance .chart-panel,
+.performance-table-wrap {
+  min-width: 0;
+  margin: 0;
+  background: #fffdf6;
+  border: 1px solid var(--report-line);
+  border-radius: .75rem;
+}
+
+.performance-summary article,
+.performance .chart-panel { padding: clamp(.85rem, 2.5vw, 1.6rem); }
+.performance-summary span, .performance-summary small,
+.performance .chart-panel figcaption span { display: block; color: var(--report-muted); }
+.performance-summary strong {
+  display: block;
+  margin: .35rem 0;
+  color: #215940;
+  font-size: clamp(1.65rem, 4vw, 2.25rem);
+  line-height: 1.1;
+}
+.performance .chart-panel figcaption {
+  display: grid;
+  gap: .25rem;
+  margin-bottom: 1rem;
+  color: var(--report-ink);
+}
+.performance .chart-panel figcaption strong { font-size: 1.125rem; }
+.performance .chart-panel figcaption span, .performance-summary small { font-size: .875rem; }
+.performance .chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem 1rem;
+  margin-bottom: 1rem;
+  font-size: .875rem;
+}
+.performance .chart-legend span { display: inline-flex; align-items: center; gap: .3rem; }
+.performance .chart-legend i { width: .6rem; height: .6rem; border-radius: .12rem; }
+.performance .intraday-key, .performance .intraday-bar { --series: #2c6c4d; }
+.performance .swing-key, .performance .swing-bar { --series: #416b84; }
+.performance .long-key, .performance .long-bar { --series: #a77a35; }
+.performance .chart-legend i { background: var(--series); }
+.performance .return-bars, .performance .trade-list { display: grid; gap: .65rem; }
+.performance .return-month, .performance .trade-row {
+  display: grid;
+  grid-template-columns: minmax(2rem, .7fr) repeat(3, minmax(0, 1.4fr));
+  align-items: center;
+  gap: .5rem;
+  font-size: .875rem;
+}
+.performance .month-label, .performance .trade-row span { color: var(--report-muted); }
+.performance .return-bar { display: grid; gap: .15rem; min-width: 0; }
+.performance .return-bar::after, .performance .trade-row i {
+  display: block;
+  height: .3rem;
+  border-radius: .2rem;
+  background: linear-gradient(to right, var(--series) var(--value), #e9e9df var(--value));
+  content: "";
+}
+.performance .negative-bar { --series: #a24537; color: #8a302b; }
+.performance .negative-bar::after {
+  background: linear-gradient(to left, var(--series) var(--value), #e9e9df var(--value));
+}
+.performance .trade-row { grid-template-columns: 4.5rem 3.5rem minmax(0, 1fr); }
+.performance .trade-row b { text-align: right; }
+.performance .trade-row i { --series: #52775e; margin-left: .3rem; }
+
+.performance-table-wrap { max-width: 100%; overflow-x: auto; }
+.performance-table-wrap:focus-visible { outline: 3px solid #26654d; outline-offset: 3px; }
+.performance-table {
+  width: 100%;
+  min-width: 39rem;
+  border-collapse: collapse;
+  color: var(--report-ink);
+}
+.performance-table caption {
+  padding: .9rem 1rem;
+  text-align: left;
+  color: #fffdf6;
+  background: #254f3c;
+  font-weight: 650;
+}
+.performance-table th, .performance-table td {
+  padding: .8rem 1rem;
+  border-bottom: 1px solid var(--report-line);
+  text-align: left;
+  vertical-align: top;
+}
+.performance-table thead th { background: #eaf0e6; }
+.performance-table tbody tr:nth-child(even) { background: #f5f5eb; }
+.performance-table td span, .performance-table td b { display: block; }
+.performance-table td span { color: var(--report-muted); font-size: .875rem; }
+.performance-table td.negative b { color: #8a302b; }
+.performance .source-callout {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .75rem 2rem;
+  margin-top: 1.25rem;
+}
+.performance .source-callout div { max-width: 64ch; }
+.performance .source-callout p, .performance-note { color: var(--report-muted); }
+.performance .source-callout p { margin: .25rem 0 0; }
+.performance .source-callout a { color: #215940; text-underline-offset: .2em; }
+.performance-note { max-width: 92ch; margin: 1rem 0 0; font-size: .9rem; }
+
+@media (max-width: 55rem) {
+  .performance-charts { grid-template-columns: 1fr; }
+}
+@media (max-width: 38rem) {
+  .performance-summary { grid-template-columns: 1fr; gap: .5rem; }
+  .performance-summary article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .15rem .5rem;
+  }
+  .performance-summary strong { grid-column: 2; grid-row: 1 / 3; }
+  .performance-summary small { grid-column: 1; }
+  .performance .return-month { gap: .35rem; }
+}

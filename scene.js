@@ -1,222 +1,323 @@
-import * as THREE from "./assets/vendor/three.module.js";
+import * as THREE from "./assets/vendor/three-0.160.1/three.module.min.js";
 
-const hero = document.querySelector("[data-pocket-hero]");
-const desk = document.querySelector("[data-trading-desk]");
-const canvas = document.querySelector("[data-trading-desk-canvas]");
+import { phaseDuration } from "./sandbox.js";
 
-if (hero && desk && canvas) {
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  const saveData = Boolean(connection && connection.saveData);
+const homeImage = new URL("./assets/screenshots/vyapar-sanket-home.png", import.meta.url).href;
 
-  if (!reducedMotion.matches && !saveData && window.WebGLRenderingContext) {
-    try {
-      const quality = window.matchMedia("(max-width: 680px)").matches ? 1.25 : 1.75;
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "low-power" });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, quality));
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.08;
 
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-      const target = new THREE.Vector3(0, 0.15, 0);
-      const pointer = new THREE.Vector2();
-      const clock = new THREE.Clock();
-      let active = true;
-      let sceneVisible = true;
-      let currentPhase = -1;
+function finish(color, metalness = 0.05, roughness = 0.58) {
+  return new THREE.MeshStandardMaterial({ color, metalness, roughness });
+}
 
-      scene.add(new THREE.HemisphereLight(0xfff6df, 0x123a2d, 2.2));
-      const keyLight = new THREE.DirectionalLight(0xffe9b3, 3.4);
-      keyLight.position.set(5, 8, 8);
-      scene.add(keyLight);
-      const greenLight = new THREE.PointLight(0x2fd17f, 7, 15, 2);
-      greenLight.position.set(-4, 1, 4);
-      scene.add(greenLight);
+// Local XY faces point towards the visitor. Bevels stay small enough to retain crisp edges.
+function roundedBody(parent, width, height, depth, radius, material, bevel = 0.015) {
+  const x = -width / 2, y = -height / 2, r = radius;
+  const shape = new THREE.Shape();
+  shape.moveTo(x + r, y);
+  shape.lineTo(-x - r, y);
+  shape.quadraticCurveTo(-x, y, -x, y + r);
+  shape.lineTo(-x, -y - r);
+  shape.quadraticCurveTo(-x, -y, -x - r, -y);
+  shape.lineTo(x + r, -y);
+  shape.quadraticCurveTo(x, -y, x, -y - r);
+  shape.lineTo(x, y + r);
+  shape.quadraticCurveTo(x, y, x + r, y);
+  const geometry = new THREE.ExtrudeGeometry(shape, {
+    depth, bevelEnabled: bevel > 0, bevelSize: bevel, bevelThickness: bevel,
+    bevelSegments: 2, curveSegments: 6, steps: 1,
+  });
+  geometry.translate(0, 0, -depth / 2);
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
 
-      const deskGroup = new THREE.Group();
-      deskGroup.rotation.set(-0.17, -0.34, 0.02);
-      scene.add(deskGroup);
+function face(parent, width, height, texture, z) {
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height),
+    new THREE.MeshBasicMaterial({ map: texture, toneMapped: false, transparent: true }));
+  mesh.position.z = z;
+  parent.add(mesh);
+  return mesh;
+}
 
-      const material = (color, roughness = 0.55, metalness = 0.08) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
-      const ivory = material(0xf5ebd8, 0.72);
-      const green = material(0x176b4d, 0.42, 0.12);
-      const greenLightMaterial = material(0x74dca4, 0.36, 0.15);
-      const brass = material(0xc8942d, 0.32, 0.72);
-      const ink = material(0x17201c, 0.48, 0.18);
-      const cream = material(0xfffbf0, 0.72);
-      const signalMaterial = new THREE.MeshStandardMaterial({ color: 0xf7c85a, emissive: 0xa66700, emissiveIntensity: 1.2, roughness: 0.27, metalness: 0.45 });
+function drawing(width, height, paint) {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  paint(canvas.getContext("2d"), width, height);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 4;
+  return texture;
+}
 
-      const addBox = (group, size, position, materialValue, radius = 0) => {
-        const geometry = radius ? new THREE.BoxGeometry(size[0], size[1], size[2], 4, 4, 1) : new THREE.BoxGeometry(...size);
-        const mesh = new THREE.Mesh(geometry, materialValue);
-        mesh.position.set(...position);
-        group.add(mesh);
-        return mesh;
-      };
-
-      const phone = new THREE.Group();
-      phone.position.set(0, 0, 0);
-      deskGroup.add(phone);
-      addBox(phone, [5.25, 7.85, 0.42], [0, 0, 0], ink, 0.22);
-      addBox(phone, [4.84, 7.37, 0.2], [0, 0, 0.31], cream, 0.18);
-      addBox(phone, [1.05, 0.1, 0.12], [0, 3.4, 0.49], ink, 0.05);
-
-      const interior = new THREE.Group();
-      interior.position.z = 0.5;
-      phone.add(interior);
-      addBox(interior, [4.15, 5.4, 0.16], [0, -0.34, 0], ivory, 0.08);
-      addBox(interior, [3.76, 0.12, 0.1], [0, -2.72, 0.14], brass, 0.02);
-
-      const goalPanel = new THREE.Group();
-      interior.add(goalPanel);
-      addBox(goalPanel, [1.35, 0.95, 0.17], [-1.18, 1.62, 0.2], green, 0.12);
-      addBox(goalPanel, [0.82, 0.12, 0.08], [-1.18, 1.68, 0.31], greenLightMaterial, 0.03);
-      addBox(goalPanel, [0.62, 0.1, 0.07], [-1.18, 1.38, 0.31], cream, 0.02);
-
-      const brokerPanel = new THREE.Group();
-      interior.add(brokerPanel);
-      addBox(brokerPanel, [1.35, 0.95, 0.17], [1.18, -1.56, 0.2], ink, 0.12);
-      addBox(brokerPanel, [0.82, 0.12, 0.08], [1.18, -1.5, 0.31], greenLightMaterial, 0.03);
-      addBox(brokerPanel, [0.62, 0.1, 0.07], [1.18, -1.79, 0.31], cream, 0.02);
-
-      const ledger = new THREE.Group();
-      interior.add(ledger);
-      addBox(ledger, [1.18, 1.7, 0.16], [1.16, 1.45, 0.22], cream, 0.05);
-      for (let row = 0; row < 4; row += 1) {
-        addBox(ledger, [0.76, 0.045, 0.05], [1.16, 1.92 - row * 0.26, 0.34], row === 0 ? brass : ink, 0.01);
-      }
-
-      const manager = new THREE.Group();
-      manager.position.set(-0.78, -0.22, 0.25);
-      interior.add(manager);
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.27, 20, 16), brass);
-      head.position.y = 0.72;
-      manager.add(head);
-      addBox(manager, [0.52, 0.82, 0.35], [0, 0.23, 0], green, 0.12);
-      const deskTop = addBox(manager, [1.3, 0.44, 0.16], [0.42, -0.2, 0.03], brass, 0.06);
-      deskTop.rotation.z = -0.08;
-      const arm = addBox(manager, [0.64, 0.12, 0.12], [0.31, 0.41, 0.1], brass, 0.04);
-      arm.rotation.z = -0.28;
-
-      const signal = new THREE.Group();
-      signal.position.set(-2.1, 0.2, 0.45);
-      interior.add(signal);
-      const signalOrb = new THREE.Mesh(new THREE.SphereGeometry(0.25, 22, 16), signalMaterial);
-      signal.add(signalOrb);
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.39, 0.035, 12, 36), brass);
-      ring.rotation.x = Math.PI / 2;
-      signal.add(ring);
-
-      const route = new THREE.Group();
-      interior.add(route);
-      const routeA = addBox(route, [0.98, 0.075, 0.055], [-1.28, -0.6, 0.27], brass, 0.03);
-      routeA.rotation.z = -0.45;
-      const routeB = addBox(route, [0.9, 0.075, 0.055], [-0.13, -1.05, 0.27], brass, 0.03);
-      routeB.rotation.z = 0.16;
-      const routeC = addBox(route, [0.92, 0.075, 0.055], [0.72, -1.22, 0.27], brass, 0.03);
-      routeC.rotation.z = -0.26;
-      const actionDot = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 12), greenLightMaterial);
-      actionDot.position.set(1.68, -1.45, 0.32);
-      route.add(actionDot);
-
-      const phases = [
-        {
-          label: "01 / CONFIGURE",
-          title: "Configure your mandate",
-          description: "Set the goal, risk boundary, and broker-connected workflow before a signal can act."
-        },
-        {
-          label: "02 / SIGNAL",
-          title: "Research becomes a signal",
-          description: "A partner-published signal enters the app and is checked against your selected configuration."
-        },
-        {
-          label: "03 / EXECUTE",
-          title: "Your configured workflow acts",
-          description: "Eligible actions follow the connected broker workflow; market risk and execution conditions still apply."
-        }
-      ];
-      const progressLabel = desk.querySelector("[data-desk-progress]");
-      const titleLabel = desk.querySelector("[data-desk-title]");
-      const descriptionLabel = desk.querySelector("[data-desk-description]");
-
-      function setPhase(nextPhase) {
-        if (nextPhase === currentPhase) return;
-        currentPhase = nextPhase;
-        const phase = phases[nextPhase];
-        desk.dataset.scenePhase = ["configure", "signal", "execute"][nextPhase];
-        progressLabel.textContent = phase.label;
-        titleLabel.textContent = phase.title;
-        descriptionLabel.textContent = phase.description;
-      }
-
-      function updatePhase() {
-        const bounds = hero.getBoundingClientRect();
-        const travel = Math.max(1, bounds.height - window.innerHeight * 0.45);
-        const progress = THREE.MathUtils.clamp((-bounds.top + window.innerHeight * 0.18) / travel, 0, 0.999);
-        setPhase(Math.min(2, Math.floor(progress * 3)));
-      }
-
-      function resize() {
-        const bounds = desk.querySelector(".desk-stage").getBoundingClientRect();
-        const width = Math.max(1, Math.floor(bounds.width));
-        const height = Math.max(1, Math.floor(bounds.height));
-        renderer.setSize(width, height, false);
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-      }
-
-      function onPointerMove(event) {
-        const bounds = desk.getBoundingClientRect();
-        pointer.x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
-        pointer.y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
-      }
-
-      function render() {
-        if (active && sceneVisible && !document.hidden) {
-          const time = clock.getElapsedTime();
-          deskGroup.rotation.y += ((-0.34 + pointer.x * 0.09) - deskGroup.rotation.y) * 0.035;
-          deskGroup.rotation.x += ((-0.17 + pointer.y * 0.045) - deskGroup.rotation.x) * 0.035;
-          camera.position.set(pointer.x * 0.22, 0.12 - pointer.y * 0.12, 13.9);
-          camera.lookAt(target);
-          manager.rotation.z = Math.sin(time * 1.1) * 0.018;
-          signal.position.y = 0.2 + Math.sin(time * 1.8) * 0.08;
-          signal.rotation.z += 0.015;
-          ring.rotation.z -= 0.026;
-          const phaseStrength = currentPhase === 0 ? 1 : currentPhase === 1 ? 1.45 : 1.85;
-          signalOrb.scale.setScalar(currentPhase === 1 ? 1 + Math.sin(time * 4) * 0.12 : 0.8);
-          signalOrb.material.emissiveIntensity = phaseStrength;
-          actionDot.scale.setScalar(currentPhase === 2 ? 1 + Math.sin(time * 5) * 0.2 : 0.72);
-          greenLight.intensity = currentPhase === 2 ? 9 : 7;
-          renderer.render(scene, camera);
-        }
-        window.requestAnimationFrame(render);
-      }
-
-      const observer = new IntersectionObserver((entries) => {
-        sceneVisible = entries.some((entry) => entry.isIntersecting);
-      }, { threshold: 0.06 });
-
-      camera.position.set(0, 0.12, 13.9);
-      camera.lookAt(target);
-      resize();
-      updatePhase();
-      setPhase(0);
-      observer.observe(hero);
-      window.addEventListener("resize", resize, { passive: true });
-      window.addEventListener("scroll", updatePhase, { passive: true });
-      desk.addEventListener("pointermove", onPointerMove, { passive: true });
-      desk.addEventListener("pointerleave", () => pointer.set(0, 0), { passive: true });
-      document.addEventListener("visibilitychange", () => { active = !document.hidden; });
-      reducedMotion.addEventListener("change", (event) => {
-        if (event.matches) window.location.reload();
-      });
-      document.documentElement.classList.add("webgl-ready");
-      render();
-    } catch (error) {
-      console.warn("Pocket trading desk WebGL scene unavailable; static illustration retained.", error);
+function slipPrint() {
+  return drawing(640, 780, (ctx) => {
+    ctx.fillStyle = "#365345";
+    ctx.fillRect(39, 47, 57, 9);
+    ctx.font = "bold 26px system-ui";
+    ctx.fillText("PARTNER RESEARCH", 40, 111);
+    ctx.fillStyle = "#243c30";
+    ctx.font = "bold 76px Georgia";
+    ctx.fillText("Signal slip", 38, 233);
+    ctx.strokeStyle = "#aaa593";
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(40, 277); ctx.lineTo(600, 277); ctx.stroke();
+    ctx.fillStyle = "#647263";
+    ctx.font = "30px system-ui";
+    ctx.fillText("Partner signal", 39, 344);
+    ctx.strokeStyle = "#c6c6b8";
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 4; i++) {
+      const y = 413 + i * 55;
+      ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(592, y); ctx.stroke();
     }
+    ctx.fillStyle = "#a3854d";
+    ctx.fillRect(40, 699, 82, 8);
+  });
+}
+
+function brokerPrint() {
+  return drawing(640, 240, (ctx) => {
+    ctx.fillStyle = "#f8eed4";
+    ctx.font = "bold 70px system-ui";
+    ctx.textAlign = "center";
+    ctx.fillText("Your broker", 320, 140);
+    ctx.fillStyle = "#c2a76b";
+    ctx.fillRect(281, 181, 78, 6);
+  });
+}
+
+function disc(parent, x, y, z, radius, height, material) {
+  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, height, 20), material);
+  mesh.position.set(x, y, z);
+  mesh.castShadow = true;
+  parent.add(mesh);
+}
+
+function addPaper(scene) {
+  const paper = finish(0xfdf8e9), buff = finish(0xc9b791);
+  for (let i = 0; i < 5; i++) {
+    const sheet = new THREE.Group();
+    sheet.position.set(-2.65 + i * 0.024, 0.07 + i * 0.052, 0.0 - i * 0.015);
+    sheet.rotation.set(-Math.PI / 2, 0, -0.13 + i * 0.052, "XYZ");
+    scene.add(sheet);
+    roundedBody(sheet, 1.94, 2.36, i === 0 ? 0.07 : 0.035, 0.035, i === 0 ? buff : paper, 0.005);
+    if (i === 4) face(sheet, 1.88, 2.29125, slipPrint(), 0.026);
   }
+}
+
+function addPhone(scene, texture) {
+  const height = 3.66;
+  const width = height * texture.image.width / texture.image.height;
+  const phone = new THREE.Group();
+  phone.position.set(-0.03, 2.0, -0.30);
+  phone.rotation.set(-0.125, -0.07, -0.018);
+  scene.add(phone);
+  roundedBody(phone, width + 0.18, height + 0.20, 0.17, 0.16, finish(0x3c4042, 0.68, 0.32), 0.029);
+  roundedBody(phone, width + 0.13, height + 0.15, 0.012, 0.12, finish(0x141917, 0.18), 0.009).position.z = 0.104;
+  face(phone, width, height, texture, 0.123);
+  const holder = roundedBody(scene, width + 0.48, 0.18, 1.05, 0.09, finish(0x333c37, 0.45), 0.035);
+  holder.position.set(-0.03, 0.14, -0.28);
+  const lip = roundedBody(scene, width + 0.16, 0.20, 0.16, 0.055, finish(0x29312f, 0.55), 0.015);
+  lip.position.set(-0.03, 0.27, 0.13);
+}
+
+function addBroker(scene) {
+  const broker = new THREE.Group();
+  broker.position.set(2.82, 0.50, -0.20);
+  broker.rotation.y = -0.15;
+  scene.add(broker);
+  const green = finish(0x23563f, 0.26, 0.39), base = finish(0x263c31, 0.35);
+  roundedBody(broker, 1.84, 0.62, 0.90, 0.14, base, 0.07).position.y = -0.07;
+  roundedBody(broker, 1.87, 0.65, 1.00, 0.16, green, 0.08).position.y = 0.06;
+  const label = face(broker, 1.62, 0.6075, brokerPrint(), 0.595);
+  label.position.y = 0.07;
+  const brass = finish(0xd2ad65, 0.55, 0.30);
+  for (const x of [-0.66, 0.66]) {
+    disc(broker, x, 0.475, -0.30, 0.046, 0.014, brass);
+  }
+  for (let i = 0; i < 5; i++) {
+    const slat = roundedBody(broker, 0.46, 0.027, 0.024, 0.01, base, 0);
+    slat.position.set(0, 0.47, -0.25 + i * 0.105);
+  }
+}
+
+function addPath(scene) {
+  const points = [
+    [-2.58, 0.094, 1.08], [-2.58, 0.09, 1.50], [-2.35, 0.09, 1.69],
+    [-0.32, 0.09, 1.69], [-0.03, 0.09, 1.49], [-0.03, 0.09, 0.29],
+    [0.45, 0.09, 0.27], [0.72, 0.09, 0.64], [1.24, 0.09, 0.73],
+    [2.58, 0.09, 0.73], [2.80, 0.09, 0.59], [2.80, 0.09, 0.55],
+  ].map(([x,y,z]) => new THREE.Vector3(x,y,z));
+  const path = new THREE.CatmullRomCurve3(points);
+  const line = new THREE.Mesh(new THREE.TubeGeometry(path, 90, 0.030, 8, false), finish(0xc2974d, 0.58, 0.32));
+  line.castShadow = true;
+  scene.add(line);
+  // A raised amber beacon with a dark rim stays readable over paper and brass.
+  const pulse = new THREE.Group();
+  const core = new THREE.Mesh(new THREE.OctahedronGeometry(0.24),
+    new THREE.MeshStandardMaterial({ color: 0xffb32e, emissive: 0xa56005, emissiveIntensity: 0.51 }));
+  core.position.y = 0.18;
+  core.scale.y = 1.32;
+  pulse.add(core);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.23, 0.041, 8, 36), finish(0x553711));
+  rim.rotation.x = -Math.PI / 2;
+  pulse.add(rim);
+  scene.add(pulse);
+  return { pulse, path, phoneStop: 5 / (points.length - 1) };
+}
+
+function makeDesk(texture) {
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xe8e1d3);
+  const camera = new THREE.OrthographicCamera(-4.72, 4.72, 3.147, -3.147, 0.1, 80);
+  camera.position.set(2.05, 7.68, 13.4);
+  camera.lookAt(0, 1.64, 0);
+  scene.add(new THREE.HemisphereLight(0xfffffa, 0xbab8af, 2));
+  const light = new THREE.DirectionalLight(0xfffcf1, 2.6);
+  light.position.set(-4, 8, 5);
+  light.castShadow = true;
+  light.shadow.mapSize.set(512, 512);
+  Object.assign(light.shadow.camera, {left:-6, right:6, top:5, bottom:-5, far:22});
+  light.shadow.normalBias = 0.022;
+  light.shadow.bias = -0.0002;
+  light.shadow.radius = 5;
+  light.shadow.blurSamples = 6;
+  scene.add(light);
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), finish(0xd7d2c6, 0.01, 0.91));
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+  const grid = new THREE.GridHelper(48, 60, 0xb2a58b, 0xb2a58b);
+  grid.material.transparent = true;
+  grid.material.opacity = 0.25;
+  grid.position.y = 0.004;
+  scene.add(grid);
+  // The recessed green base gives the route a distinct working surface.
+  const plinth = new THREE.Group();
+  plinth.position.set(0,-0.12,0.06);
+  plinth.rotation.x = -Math.PI / 2;
+  scene.add(plinth);
+  roundedBody(plinth, 8.5, 4.7, 0.20, 0.26, finish(0x183e33,0.15), 0.035);
+  floor.position.y = -0.27;
+  grid.position.y = -0.265;
+  addPaper(scene);
+  addPhone(scene, texture);
+  addBroker(scene);
+  return { scene, camera, ...addPath(scene) };
+}
+
+export async function mountDesk(container) {
+  // Complete the image decode before attaching a canvas so failures preserve the still.
+  const texture = await new THREE.TextureLoader().loadAsync(homeImage);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "low-power" });
+  } catch (error) {
+    texture.dispose();
+    throw error;
+  }
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.VSMShadowMap;
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.6));
+  const {scene, camera, path, pulse, phoneStop} = makeDesk(texture);
+  const canvas = renderer.domElement;
+  canvas.className = "desk-render";
+  canvas.setAttribute("aria-hidden", "true");
+  container.append(canvas);
+
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  let state = { phase: "idle", run: 0, phaseStartedAt: performance.now() };
+  let onScreen = true;
+  let frameId = 0;
+  let destroyed = false;
+  function cancelFrame() {
+    cancelAnimationFrame(frameId);
+    frameId = 0;
+  }
+  function schedule() {
+    if (!destroyed && onScreen && !document.hidden && !frameId) frameId = requestAnimationFrame(draw);
+  }
+  function draw(now) {
+    frameId = 0;
+    if (destroyed || !onScreen || document.hidden) return;
+    const travelling = state.phase === "toPhone" || state.phase === "toBroker";
+    const duration = travelling ? phaseDuration[state.phase] : 0;
+    const progress = duration && !reducedMotion.matches
+      ? Math.min(1, Math.max(0, (now - state.phaseStartedAt) / duration)) : 1;
+    const eased = progress * progress * (3 - 2 * progress);
+    let t = phoneStop;
+    if (state.phase === "toPhone") t = phoneStop * eased;
+    if (state.phase === "toBroker") t = phoneStop + (1 - phoneStop) * eased;
+    if (state.phase === "done") t = 1;
+    pulse.visible = state.phase !== "idle";
+    pulse.position.copy(path.getPoint(t));
+    pulse.position.y += 0.14;
+    renderer.render(scene, camera);
+    if (duration && progress < 1) schedule();
+  }
+  function resize() {
+    if (destroyed) return;
+    const { width, height } = container.getBoundingClientRect();
+    if (!width || !height) return;
+    renderer.setSize(Math.round(width), Math.round(height), false);
+    const halfHeight = Math.max(3.147, 4.72 * height / width);
+    camera.top = halfHeight;
+    camera.bottom = -halfHeight;
+    camera.right = halfHeight * width / height;
+    camera.left = -camera.right;
+    camera.updateProjectionMatrix();
+    schedule();
+  }
+  function visibility() {
+    if (document.hidden || !onScreen) cancelFrame();
+    else schedule();
+  }
+  const intersection = new IntersectionObserver(([entry]) => {
+    onScreen = entry.isIntersecting;
+    visibility();
+  });
+  const size = new ResizeObserver(resize);
+  function destroy() {
+    if (destroyed) return;
+    destroyed = true;
+    cancelFrame();
+    intersection.disconnect();
+    size.disconnect();
+    document.removeEventListener("visibilitychange", visibility);
+    reducedMotion.removeEventListener("change", schedule);
+    canvas.removeEventListener("webglcontextlost", destroy);
+    canvas.remove();
+    const materials = new Set();
+    scene.traverse((object) => {
+      object.geometry?.dispose();
+      if (object.material) materials.add(object.material);
+    });
+    for (const material of materials) {
+      material.map?.dispose();
+      material.dispose();
+    }
+    renderer.dispose();
+  }
+  canvas.addEventListener("webglcontextlost", destroy);
+  intersection.observe(container);
+  size.observe(container);
+  document.addEventListener("visibilitychange", visibility);
+  reducedMotion.addEventListener("change", schedule);
+  resize();
+  return {
+    update(next) {
+      if (destroyed) return;
+      state = { ...next, phaseStartedAt: next.phaseStartedAt ?? performance.now() };
+      schedule();
+    },
+    destroy,
+  };
 }
