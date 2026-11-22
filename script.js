@@ -17,7 +17,7 @@ const backup = document.querySelector(".backup-pulse");
 const fields = ["goal", "mode", "signal"];
 const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 const phaseLabels = {
-  idle: "Ready at partner", toPhone: "Partner → phone", check: "Phone checks settings",
+  idle: "Ready at partner", toPhone: "Fund house → phone", check: "Phone checks settings",
   review: "Waiting at your phone", skipped: "Stopped at your phone",
   toBroker: "Phone → broker", done: "Broker received order"
 };
@@ -63,7 +63,8 @@ function render() {
     (review ? confirmOrder : finished ? replay : send).focus({preventScroll:true});
   }
   stage.hidden = !opened;
-  stage.textContent = phaseLabels[state.phase];
+  stage.textContent = state.mode === "automatic" && state.signal !== "close" && state.phase === "done"
+    ? "Automatic opening received by broker" : phaseLabels[state.phase];
   backup.hidden = !opened || state.phase === "idle";
   backup.style.setProperty("--travel", (phaseDuration[state.phase] || 0) + "ms");
   backup.dataset.phase = state.phase;
@@ -110,7 +111,21 @@ render();
 controls.hidden = false;
 playOnDesk.hidden = false;
 byId("example").hidden = true;
-if (new URLSearchParams(location.search).get("demo") === "signal") {
+function playAutomatic() {
+  dispatch({type:"reset"});
+  dispatch({type:"select",field:"mode",value:"automatic"});
+  void openDesk();
+  dispatch({type:"send"});
+}
+playOnDesk.addEventListener("click", event => {
+  if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return;
+  event.preventDefault();
+  playAutomatic();
+  panel.focus({preventScroll:true});
+});
+const requestedDemo = new URLSearchParams(location.search).get("demo");
+if (requestedDemo === "automatic") playAutomatic();
+if (requestedDemo === "signal") {
   void openDesk();
   dispatch({type:"send"});
 }

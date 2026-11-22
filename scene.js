@@ -58,7 +58,7 @@ function slipPrint() {
     ctx.fillStyle = "#365345";
     ctx.fillRect(39, 47, 57, 9);
     ctx.font = "bold 26px system-ui";
-    ctx.fillText("PARTNER RESEARCH", 40, 111);
+    ctx.fillText("FUND HOUSE", 40, 111);
     ctx.fillStyle = "#243c30";
     ctx.font = "bold 76px Georgia";
     ctx.fillText("Signal slip", 38, 233);
@@ -67,7 +67,7 @@ function slipPrint() {
     ctx.beginPath(); ctx.moveTo(40, 277); ctx.lineTo(600, 277); ctx.stroke();
     ctx.fillStyle = "#647263";
     ctx.font = "30px system-ui";
-    ctx.fillText("Partner signal", 39, 344);
+    ctx.fillText("Sample research signal", 39, 344);
     ctx.strokeStyle = "#c6c6b8";
     ctx.lineWidth = 2;
     for (let i = 0; i < 4; i++) {
@@ -158,7 +158,7 @@ function addPath(scene) {
   scene.add(line);
   // A raised amber beacon with a dark rim stays readable over paper and brass.
   const pulse = new THREE.Group();
-  const core = new THREE.Mesh(new THREE.OctahedronGeometry(0.24),
+  const core = new THREE.Mesh(new THREE.SphereGeometry(0.19,24,16),
     new THREE.MeshStandardMaterial({ color: 0xffb32e, emissive: 0xa56005, emissiveIntensity: 0.51 }));
   core.position.y = 0.18;
   core.scale.y = 1.32;
@@ -172,15 +172,26 @@ function addPath(scene) {
 
 function makeDesk(texture) {
   const scene = new THREE.Scene();
+  // Wide studio softboxes give curved metal edges and enamel a visible reflection.
+  const studio = drawing(512,256,(ctx,w,h) => {
+    ctx.fillStyle = "#545952"; ctx.fillRect(0,0,w,h);
+    const wash = ctx.createLinearGradient(0,0,0,h);
+    wash.addColorStop(0,"#c4beb0"); wash.addColorStop(0.58,"#666965"); wash.addColorStop(1,"#333a34");
+    ctx.fillStyle = wash; ctx.fillRect(0,0,w,h);
+    ctx.fillStyle = "#fffae9"; ctx.fillRect(44,35,116,90);
+    ctx.fillStyle = "#dee8ef"; ctx.fillRect(346,48,48,112);
+  });
+  studio.mapping = THREE.EquirectangularReflectionMapping;
+  scene.environment = studio;
   scene.background = new THREE.Color(0xe8e1d3);
   const camera = new THREE.OrthographicCamera(-4.72, 4.72, 3.147, -3.147, 0.1, 80);
   camera.position.set(2.05, 7.68, 13.4);
   camera.lookAt(0, 1.64, 0);
-  scene.add(new THREE.HemisphereLight(0xfffffa, 0xbab8af, 2));
-  const light = new THREE.DirectionalLight(0xfffcf1, 2.6);
+  scene.add(new THREE.HemisphereLight(0xfffffa, 0xbab8af, 0.95));
+  const light = new THREE.DirectionalLight(0xfff3dd, 2.0);
   light.position.set(-4, 8, 5);
   light.castShadow = true;
-  light.shadow.mapSize.set(512, 512);
+  light.shadow.mapSize.set(1024, 1024);
   Object.assign(light.shadow.camera, {left:-6, right:6, top:5, bottom:-5, far:22});
   light.shadow.normalBias = 0.022;
   light.shadow.bias = -0.0002;
@@ -201,7 +212,35 @@ function makeDesk(texture) {
   plinth.position.set(0,-0.12,0.06);
   plinth.rotation.x = -Math.PI / 2;
   scene.add(plinth);
-  roundedBody(plinth, 8.5, 4.7, 0.20, 0.26, finish(0x183e33,0.15), 0.035);
+  const walnut = drawing(512,128,(ctx,w,h) => {
+    ctx.fillStyle = "#916448"; ctx.fillRect(0,0,w,h);
+    for(let i=0;i<180;i++){
+      const y=(i*37.3)%h;
+      ctx.strokeStyle=i%3?"#32231732":"#e0b98c58"; ctx.lineWidth=0.4 + (i%5)*0.18;
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.bezierCurveTo(w*.25,y+Math.sin(i)*6,w*.65,y-4,w,y); ctx.stroke();
+    }
+  });
+  walnut.wrapS = walnut.wrapT = THREE.RepeatWrapping;
+  walnut.repeat.set(.32,.65);
+  const veneer = finish(0xffffff,0.03,0.45);
+  veneer.map = walnut;
+  roundedBody(plinth,8.55,4.75,0.18,0.24,veneer,0.035);
+  const hide = finish(0x284c3e,0.03,0.8);
+  const grain = drawing(128,128,(ctx,w,h) => {
+    const pixels = ctx.createImageData(w,h);
+    let seed=29;
+    for(let i=0;i<pixels.data.length;i+=4){
+      seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+      const value=92+(seed>>>25);
+      pixels.data.set([value,value,value,255],i);
+    }
+    ctx.putImageData(pixels,0,0);
+  });
+  grain.colorSpace = THREE.NoColorSpace;
+  grain.wrapS = grain.wrapT = THREE.RepeatWrapping;
+  grain.repeat.set(2,2);
+  hide.bumpMap=grain; hide.bumpScale=0.009;
+  roundedBody(plinth,8.39,4.59,0.032,0.22,hide,0.012).position.z=0.106;
   floor.position.y = -0.27;
   grid.position.y = -0.265;
   addPaper(scene);
@@ -302,8 +341,10 @@ export async function mountDesk(container) {
     });
     for (const material of materials) {
       material.map?.dispose();
+      material.bumpMap?.dispose();
       material.dispose();
     }
+    scene.environment?.dispose();
     renderer.dispose();
   }
   canvas.addEventListener("webglcontextlost", destroy);
